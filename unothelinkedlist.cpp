@@ -33,17 +33,53 @@ class LinkedList
 public:
     ListNode* createLinkedListFromArray(vector<int>& nodes)
     {
-        
+        ListNode *node = nullptr;
+        ListNode *next = nullptr;
+
+        for (int i = nodes.size()-1; i >= 0; --i)
+        {
+            node = new ListNode(nodes[i]);
+            node->next = next;
+            next = node;
+        }
+
+        return node;
     }
 
     void printNodesArray(vector<int>& nodes)
     {
-        
+        int n = nodes.size();
+        if (0 == n)
+            return;
+
+        cout << "nodes: [";
+
+        for (int i = 0; i < n; ++i)
+        {
+            cout << " " << nodes[i];
+            if (i < n - 1)
+                cout << ",";
+        }
+
+        cout << " ]" << endl;
     }
 
     void printLinkedList(ListNode* head)
-    {   
-        
+    {
+        if (!head)
+            return;
+
+        cout << "Single Linked List: ";
+
+        while (head)
+        {
+            cout << head->val;
+            head = head->next;
+            if (head)
+                cout << "->";
+        }
+
+        cout << endl;
     }
 
     void buildCycle(ListNode* head, int& cycleEntry)
@@ -60,7 +96,74 @@ public:
 class Solution
 {
 public:
-    
+    // 19. Remove Nth Node From End of List
+    ListNode* removeNthFromEnd(ListNode* head, int n)
+    {
+        if (!head)
+            return head;
+
+        ListNode *former = head;
+        ListNode *latter = head; 
+        ListNode *prev = nullptr;
+
+        while (n--)
+            former = former->next;
+        
+        if (!former)
+            return head->next;
+
+        while (former)
+        {
+            former = former->next;
+            prev = latter;
+            latter = latter->next;
+        }
+
+        prev->next = latter->next;
+
+        return head;
+    }
+
+    // 2. Add Two Numbers
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
+    {
+        if (!l1)
+            return l2;
+        if (!l2)
+            return l1;
+
+        ListNode *cur1 = l1;
+        ListNode *cur2 = l2;
+        ListNode *prev = nullptr;
+        int carry = 0;
+
+        while (cur1 && cur2)
+        {
+            cur1->val += cur2->val + carry;
+            carry = cur1->val / 10;
+            cur1->val %= 10;
+            prev = cur1;
+            cur1 = cur1->next;
+            cur2 = cur2->next;
+        }
+
+        if (!cur1)
+            cur1 = prev->next = cur2;
+
+        while (carry && cur1)
+        {
+            cur1->val += carry;
+            carry = cur1->val / 10;
+            cur1->val %= 10;
+            prev = cur1;
+            cur1 = cur1->next;
+        }
+
+        if (carry)
+            prev->next = new ListNode(1);
+
+        return l1;
+    }
 };
 
 int main()
@@ -74,6 +177,11 @@ int main()
     head = singleLinkedList.createLinkedListFromArray(nodes);
     singleLinkedList.printLinkedList(head);
 
+    vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
+    singleLinkedList.printNodesArray(nodes2);
+    ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes2);
+    singleLinkedList.printLinkedList(head2);
+
     // 19. Remove Nth Node From End of List
     // int n;
     // while(nullptr != head)
@@ -86,15 +194,10 @@ int main()
     //     singleLinkedList.printLinkedList(head);
     // }
 
-    vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
-    singleLinkedList.printNodesArray(nodes2);
-    ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes2);
-    singleLinkedList.printLinkedList(head2);
-
     // 2. Add Two Numbers
-    // head = solu.addTwoNumbers(head, head2);
-    // cout << "Added two numbers, ";
-    // singleLinkedList.printLinkedList(head);
+    head = solu.addTwoNumbers(head, head2);
+    cout << "Added two numbers, ";
+    singleLinkedList.printLinkedList(head);
 
     // 24. Swap Nodes in Pairs
     // head = solu.swapPairs(head);
@@ -309,9 +412,9 @@ int main()
     // }
 
     // 445. Add Two Numbers II
-    head = solu.addTwoNumbersII(head, head2);
-    cout << "Added two numbers II, ";
-    singleLinkedList.printLinkedList(head);
+    // head = solu.addTwoNumbersII(head, head2);
+    // cout << "Added two numbers II, ";
+    // singleLinkedList.printLinkedList(head);
 
     DOCK();
 
