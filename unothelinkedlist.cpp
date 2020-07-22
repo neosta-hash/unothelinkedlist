@@ -164,6 +164,65 @@ public:
 
         return l1;
     }
+
+    // 24. Swap Nodes in Pairs
+    ListNode* swapPairs(ListNode* head)
+    { 
+        ListNode *node = head;
+        ListNode *prev = nullptr, *next = nullptr, *pprev = nullptr;
+        int step = 1;
+
+        while (node)
+        {
+            if (0 == (step++) % 2)
+            {
+                prev->next = node->next;
+                node->next = prev;
+                if (3 == step)
+                    head = node;
+                else
+                    pprev->next = node;
+                node = prev->next;
+                pprev = prev;
+            }
+            else
+            {
+                prev = node;
+                node = node->next;
+            }
+        }
+
+        return head;
+    }
+
+    // 61. Rotate List
+    ListNode* rotateRight(ListNode* head, int k)
+    {
+        if (!head || 0 == k)
+            return head;
+
+        vector<ListNode*> nodes;
+        int n = 0;
+
+        while (head)
+        {
+            nodes.push_back(head);
+            head = head->next;
+            ++n;
+        }
+
+        if (1 == n || 0 == k % n)
+            return nodes[0];
+
+        k %= n;
+        k = n - k;
+
+        head = nodes[k];
+        nodes[k-1]->next = nullptr;
+        nodes[n-1]->next = nodes[0];
+
+        return head;
+    }
 };
 
 int main()
@@ -177,10 +236,10 @@ int main()
     head = singleLinkedList.createLinkedListFromArray(nodes);
     singleLinkedList.printLinkedList(head);
 
-    vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
-    singleLinkedList.printNodesArray(nodes2);
-    ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes2);
-    singleLinkedList.printLinkedList(head2);
+    // vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
+    // singleLinkedList.printNodesArray(nodes2);
+    // ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes2);
+    // singleLinkedList.printLinkedList(head2);
 
     // 19. Remove Nth Node From End of List
     // int n;
@@ -195,9 +254,9 @@ int main()
     // }
 
     // 2. Add Two Numbers
-    head = solu.addTwoNumbers(head, head2);
-    cout << "Added two numbers, ";
-    singleLinkedList.printLinkedList(head);
+    // head = solu.addTwoNumbers(head, head2);
+    // cout << "Added two numbers, ";
+    // singleLinkedList.printLinkedList(head);
 
     // 24. Swap Nodes in Pairs
     // head = solu.swapPairs(head);
@@ -205,15 +264,15 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 61. Rotate List
-    // int k;
-    // while(1)
-    // {
-    //     cout << "How many places do you want to rotate the list to right by: ";
-    //     cin >> k;
-    //     head = solu.rotateRight(head, k);
-    //     cout << "Rotated the list to right by " << k << " places, ";
-    //     singleLinkedList.printLinkedList(head);
-    // }
+    int k;
+    while(1)
+    {
+        cout << "How many places do you want to rotate the list to right by: ";
+        cin >> k;
+        head = solu.rotateRight(head, k);
+        cout << "Rotated the list to right by " << k << " places, ";
+        singleLinkedList.printLinkedList(head);
+    }
     
     // 83. Remove Duplicates from Sorted List
     // nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17 };
