@@ -8,7 +8,7 @@
 #include <math.h>
 #include <string>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
 
@@ -223,6 +223,74 @@ public:
 
         return head;
     }
+
+    // 83. Remove Duplicates from Sorted List
+    ListNode* deleteDuplicates(ListNode* head)
+    {
+        unordered_map<int, int> nodes;
+
+        ListNode *node = head;
+        ListNode *prev = nullptr;
+
+        while (node)
+        {
+            auto it = nodes.find(node->val);
+            if (nodes.end() == it)
+            {
+                nodes.insert({node->val, 1});
+                prev = node;
+            }
+            else
+                prev->next = node->next;
+
+            node = node->next;
+        }
+
+        return head;
+    }
+
+    // 82. Remove Duplicates from Sorted List II
+    ListNode* deleteDuplicatesII(ListNode* head)
+    {
+        ListNode *prev = nullptr;
+        ListNode *node = head;
+
+        while (node && node->next)
+        {
+            if (node->val != node->next->val)
+            {
+                prev = node;
+                node = node->next;
+                continue;
+            }
+
+            node = node->next;
+            
+            while (1)
+            {
+                if (!node->next)
+                {
+                    node = nullptr;
+                    break;
+                }
+
+                if (node->val != node->next->val)
+                {
+                    node = node->next;
+                    break;
+                }
+
+                node = node->next;
+            }
+
+            if (!prev)
+                head = node;
+            else
+                prev->next = node;
+        }
+
+        return head;
+    }
 };
 
 int main()
@@ -264,16 +332,16 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 61. Rotate List
-    int k;
-    while(1)
-    {
-        cout << "How many places do you want to rotate the list to right by: ";
-        cin >> k;
-        head = solu.rotateRight(head, k);
-        cout << "Rotated the list to right by " << k << " places, ";
-        singleLinkedList.printLinkedList(head);
-    }
-    
+    // int k;
+    // while(1)
+    // {
+    //     cout << "How many places do you want to rotate the list to right by: ";
+    //     cin >> k;
+    //     head = solu.rotateRight(head, k);
+    //     cout << "Rotated the list to right by " << k << " places, ";
+    //     singleLinkedList.printLinkedList(head);
+    // }
+
     // 83. Remove Duplicates from Sorted List
     // nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17 };
     // singleLinkedList.printNodesArray(nodes);
@@ -284,17 +352,17 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 82. Remove Duplicates from Sorted List II
-    // nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17, 17 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
-    // head = solu.deleteDuplicatesII(head);
-    // cout << "Deleted duplicates2, ";
-    // singleLinkedList.printLinkedList(head);
+    nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17, 17 };
+    singleLinkedList.printNodesArray(nodes);
+    head = singleLinkedList.createLinkedListFromArray(nodes);
+    singleLinkedList.printLinkedList(head);
+    head = solu.deleteDuplicatesII(head);
+    cout << "Deleted duplicates2, ";
+    singleLinkedList.printLinkedList(head);
 
     // 86. Partition List
     // int x;
-    // while(1)
+    // while (1)
     // {
     //     cout << "Input partition number: ";
     //     cin >> x;
