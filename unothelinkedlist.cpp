@@ -291,6 +291,117 @@ public:
 
         return head;
     }
+
+    // 86. Partition List
+    // ListNode* partition(ListNode* head, int x)
+    // {
+    //     ListNode *node = head;
+    //     ListNode *ltail = nullptr;
+    //     ListNode *xnode = nullptr;
+    //     ListNode *rhead = nullptr;
+    //     ListNode *rtail = nullptr;
+
+    //     while (node)
+    //     {
+    //         if (node->val == x)
+    //             break;
+    //         node = node->next;
+    //     }
+
+    //     if (!node)
+    //         return head;
+
+    //     xnode = node;
+    //     node = head;
+    //     head = nullptr;
+
+    //     while (node)
+    //     {
+    //         if (node == xnode)
+    //         {
+    //             node = node->next;
+    //             continue;
+    //         }
+
+    //         if (node->val < x)
+    //         {
+    //             if (!ltail)
+    //                 head = ltail = node;
+    //             else
+    //             {
+    //                 ltail->next = node;
+    //                 ltail = node;
+    //             }
+    //         }
+    //         else if (node->val > x)
+    //         {
+    //             if (!rhead)
+    //                 rhead = rtail = node;
+    //             else
+    //             {
+    //                 rtail->next = node;
+    //                 rtail = node;
+    //             }
+    //         }
+
+    //         node = node->next;
+    //     }
+
+    //     xnode->next = rhead;
+    //     if (rtail)
+    //         rtail->next = nullptr;
+
+    //     if (!head)
+    //         head = xnode;
+    //     else
+    //         ltail->next = xnode;
+
+    //     return head; 
+    // }
+
+    ListNode* partition(ListNode* head, int x)
+    {
+        ListNode *node =head;
+        ListNode *ltail = nullptr;
+        ListNode *rhead = nullptr;
+        ListNode *rtail = nullptr;
+
+        while (node)
+        {
+            if (node->val < x)
+            {
+                if (!ltail)
+                    head = ltail = node;
+                else
+                {
+                    ltail->next = node;
+                    ltail = node;
+                }
+            }
+            else
+            {
+                if (!rhead)
+                    rhead = rtail = node;
+                else
+                {
+                    rtail->next = node;
+                    rtail = node;
+                }
+            }
+
+            node = node->next;
+        }
+
+        if (rhead)
+        {
+            if (ltail)
+                ltail->next = rhead;
+
+            rtail->next = nullptr;
+        }
+
+        return head;
+    }
 };
 
 int main()
@@ -352,24 +463,24 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 82. Remove Duplicates from Sorted List II
-    nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17, 17 };
-    singleLinkedList.printNodesArray(nodes);
-    head = singleLinkedList.createLinkedListFromArray(nodes);
-    singleLinkedList.printLinkedList(head);
-    head = solu.deleteDuplicatesII(head);
-    cout << "Deleted duplicates2, ";
-    singleLinkedList.printLinkedList(head);
+    // nodes = { 1, 1, 1, 3, 3, 7, 9, 9, 12, 17, 17 };
+    // singleLinkedList.printNodesArray(nodes);
+    // head = singleLinkedList.createLinkedListFromArray(nodes);
+    // singleLinkedList.printLinkedList(head);
+    // head = solu.deleteDuplicatesII(head);
+    // cout << "Deleted duplicates2, ";
+    // singleLinkedList.printLinkedList(head);
 
     // 86. Partition List
-    // int x;
-    // while (1)
-    // {
-    //     cout << "Input partition number: ";
-    //     cin >> x;
-    //     head = solu.partition(head, x);
-    //     cout << "Partition the list with number " << x << ", ";
-    //     singleLinkedList.printLinkedList(head);
-    // }
+    int x;
+    while (1)
+    {
+        cout << "Input partition number: ";
+        cin >> x;
+        head = solu.partition(head, x);
+        cout << "Partition the list with number " << x << ", ";
+        singleLinkedList.printLinkedList(head);
+    }
 
     // 206. Reverse Linked List
     // head = solu.reverseList(head);
