@@ -402,6 +402,31 @@ public:
 
         return head;
     }
+
+    // 206. Reverse Linked List
+    ListNode* r_reverseList(ListNode *prev, ListNode* node)
+    {
+        if (!node)
+            return node;
+
+        ListNode *next = node->next;
+        node->next = prev;
+
+        if (!next)
+            return node;
+
+        return r_reverseList(node, next);
+    }
+
+    ListNode* i_reverseList(ListNode* head)
+    {
+        return nullptr;
+    }
+
+    ListNode* reverseList(ListNode* head)
+    {
+        return r_reverseList(NULL, head);    
+    }
 };
 
 int main()
@@ -472,20 +497,20 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 86. Partition List
-    int x;
-    while (1)
-    {
-        cout << "Input partition number: ";
-        cin >> x;
-        head = solu.partition(head, x);
-        cout << "Partition the list with number " << x << ", ";
-        singleLinkedList.printLinkedList(head);
-    }
+    // int x;
+    // while (1)
+    // {
+    //     cout << "Input partition number: ";
+    //     cin >> x;
+    //     head = solu.partition(head, x);
+    //     cout << "Partition the list with number " << x << ", ";
+    //     singleLinkedList.printLinkedList(head);
+    // }
 
     // 206. Reverse Linked List
-    // head = solu.reverseList(head);
-    // cout << "Reversed ";
-    // singleLinkedList.printLinkedList(head);
+    head = solu.reverseList(head);
+    cout << "Reversed ";
+    singleLinkedList.printLinkedList(head);
 
     // 234. Palindrome Linked List
     // nodes = { 1, 2, 3, 4, 3, 2, 1 };
