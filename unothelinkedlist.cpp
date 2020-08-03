@@ -420,12 +420,24 @@ public:
 
     ListNode* i_reverseList(ListNode* head)
     {
-        return nullptr;
+        ListNode *prev = nullptr;
+        ListNode *next = nullptr;
+
+        while (head)
+        {
+            next = head->next;
+            head->next = prev;
+            prev = head;
+            head = next;   
+        }
+
+        return prev;
     }
 
     ListNode* reverseList(ListNode* head)
     {
-        return r_reverseList(NULL, head);    
+        // return r_reverseList(NULL, head);
+        return i_reverseList(head);     
     }
 };
 
