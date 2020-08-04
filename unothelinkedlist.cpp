@@ -439,6 +439,55 @@ public:
         // return r_reverseList(NULL, head);
         return i_reverseList(head);     
     }
+
+    // 234. Palindrome Linked List
+    bool isPalindrome(ListNode* head)
+    {
+        if (!head || !head->next)
+            return true;
+        
+        if (!head->next->next)
+            return (head->val == head->next->val);
+
+        ListNode *slow = head;
+        ListNode *fast = head;
+        ListNode *prev = nullptr;
+        ListNode *next = nullptr;
+
+        while (1)
+        {
+            if (!fast->next)
+            {
+                fast = slow->next;
+                slow = prev;
+                break;
+            }
+            else if (!fast->next->next)
+            {
+                fast = slow->next;
+                slow->next = prev;
+                break;
+            }
+
+            fast = fast->next->next;
+
+            next = slow->next;
+            slow->next = prev;
+            prev = slow;
+            slow = next;
+        }
+
+        while (fast)
+        {
+            if (slow->val != fast->val)
+                return false;
+            
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        return true;
+    }
 };
 
 int main()
@@ -520,16 +569,16 @@ int main()
     // }
 
     // 206. Reverse Linked List
-    head = solu.reverseList(head);
-    cout << "Reversed ";
-    singleLinkedList.printLinkedList(head);
+    // head = solu.reverseList(head);
+    // cout << "Reversed ";
+    // singleLinkedList.printLinkedList(head);
 
     // 234. Palindrome Linked List
-    // nodes = { 1, 2, 3, 4, 3, 2, 1 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
-    // cout << "Is parlindrome: " << (solu.isPalindrome(head)?"true":"false") << endl;
+    nodes = { 1, 2, 3, 4, 3, 2, 1 };
+    singleLinkedList.printNodesArray(nodes);
+    head = singleLinkedList.createLinkedListFromArray(nodes);
+    singleLinkedList.printLinkedList(head);
+    cout << "Is parlindrome: " << (solu.isPalindrome(head)?"true":"false") << endl;
 
     // 203. Remove Linked List Elements
     // int val;
