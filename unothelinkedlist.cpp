@@ -87,9 +87,27 @@ public:
         return;
     }
 
-    ListNode* intersectLinkedList(vector<int>& nodes, ListNode* head, int intersectNode)
+    ListNode* intersectLinkedList(vector<int>& nodes, ListNode* head, int val)
     {
-        return nullptr;
+        ListNode *node = nullptr;
+        ListNode *head2 = nullptr;
+
+        while (head)
+        {
+            if (head->val == val)
+                break;
+
+            head = head->next;
+        }
+
+        node = head2 = createLinkedListFromArray(nodes);
+
+        while (node->next)
+            node = node->next;
+
+        node->next = head;
+
+        return head2;
     }
 };
 
@@ -488,6 +506,64 @@ public:
 
         return true;
     }
+
+    // 203. Remove Linked List Elements
+    ListNode* removeElements(ListNode* head, int val)
+    {
+        ListNode *node = head;
+        ListNode *prev = nullptr;
+
+        while (node)
+        {
+            if (node->val == val)
+            {
+                if (node == head)
+                    head = node->next;
+                else
+                    prev->next = node->next;
+            }
+            else
+                prev = node;
+
+            node = node->next;
+        }
+
+        return head;
+    }
+
+    // 160. Intersection of Two Linked Lists
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB)
+    {
+        if (!headA || !headB)
+            return nullptr;
+        
+        ListNode *nodeA = headA;
+        ListNode *nodeB = headB;
+        int done = 0;
+
+        while (done < 3)
+        {
+            if (nodeA == nodeB)
+                return nodeA;
+
+            nodeA = nodeA->next;
+            nodeB = nodeB->next; 
+            
+            if (!nodeA)
+            {
+                nodeA = headB;
+                ++done;
+            }
+
+            if (!nodeB)
+            {
+                nodeB = headA;
+                ++done;
+            } 
+        }
+
+        return nullptr;
+    }
 };
 
 int main()
@@ -495,16 +571,23 @@ int main()
     LinkedList singleLinkedList;
     Solution solu;
     ListNode* head = nullptr;
+    ListNode* head2 = nullptr;
+
+// #define COMMON_INIT
 
     vector<int> nodes = { 7, 6, 5, 4, 3, 2, 1 };
+#ifdef COMMON_INIT
     singleLinkedList.printNodesArray(nodes);
     head = singleLinkedList.createLinkedListFromArray(nodes);
     singleLinkedList.printLinkedList(head);
+#endif
 
-    // vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
-    // singleLinkedList.printNodesArray(nodes2);
-    // ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes2);
-    // singleLinkedList.printLinkedList(head2);
+    vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
+#ifdef COMMON_INIT
+    singleLinkedList.printNodesArray(nodes2);
+    head2 = singleLinkedList.createLinkedListFromArray(nodes2);
+    singleLinkedList.printLinkedList(head2);
+#endif
 
     // 19. Remove Nth Node From End of List
     // int n;
@@ -574,20 +657,17 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 234. Palindrome Linked List
-    nodes = { 1, 2, 3, 4, 3, 2, 1 };
-    singleLinkedList.printNodesArray(nodes);
-    head = singleLinkedList.createLinkedListFromArray(nodes);
-    singleLinkedList.printLinkedList(head);
-    cout << "Is parlindrome: " << (solu.isPalindrome(head)?"true":"false") << endl;
+    // nodes = { 1, 2, 3, 3, 2, 1 };
+    // // nodes = { 1, 2, 3, 4, 3, 2, 1 };
+    // singleLinkedList.printNodesArray(nodes);
+    // head = singleLinkedList.createLinkedListFromArray(nodes);
+    // singleLinkedList.printLinkedList(head);
+    // cout << "Is parlindrome: " << (solu.isPalindrome(head)?"true":"false") << endl;
 
     // 203. Remove Linked List Elements
     // int val;
-    // while(1)
+    // while (1)
     // {
-    //     nodes = { 1, 2, 3, 4, 3, 2, 1 };
-    //     singleLinkedList.printNodesArray(nodes);
-    //     head = singleLinkedList.createLinkedListFromArray(nodes);
-    //     singleLinkedList.printLinkedList(head);
     //     cout << "Remove integer: ";
     //     cin >> val;
     //     head = solu.removeElements(head, val);
@@ -596,20 +676,21 @@ int main()
     // }
 
     // 160. Intersection of Two Linked Lists
-    // int val;
-    // while(1)
-    // {
-    //     singleLinkedList.printNodesArray(nodes);
-    //     head = singleLinkedList.createLinkedListFromArray(nodes);
-    //     singleLinkedList.printLinkedList(head);
-    //     singleLinkedList.printNodesArray(nodes2);
-    //     cout << "Input intersection node: ";
-    //     cin >> val;
-    //     ListNode* head2 = singleLinkedList.intersectLinkedList(nodes2, head, val);
-    //     singleLinkedList.printLinkedList(head2);
-    //     ListNode* pIntersection = solu.getIntersectionNode(head, head2);
-    //     cout << "Intersection Node: " << ((nullptr == pIntersection)?"null":to_string(pIntersection->val)) << endl << endl;
-    // }
+    int val;
+    while (1)
+    {
+        singleLinkedList.printNodesArray(nodes);
+        head = singleLinkedList.createLinkedListFromArray(nodes);
+        singleLinkedList.printLinkedList(head);
+        cout << "Input intersection node: ";
+        cin >> val;
+
+        singleLinkedList.printNodesArray(nodes2);
+        head2 = singleLinkedList.intersectLinkedList(nodes2, head, val);
+        singleLinkedList.printLinkedList(head2);
+        ListNode* pIntersection = solu.getIntersectionNode(head, head2);
+        cout << "Intersection Node: " << ((nullptr == pIntersection)?"null":to_string(pIntersection->val)) << endl << endl;
+    }
 
     // 876. Middle of the Linked List
     // ListNode *pMiddle = solu.middleNode(head);
