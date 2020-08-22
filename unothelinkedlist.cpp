@@ -20,11 +20,19 @@ using namespace std;
 }while(0)
 
 // Definition for singly-linked list node.
-struct ListNode
-{
+struct ListNode {
     int val;
     ListNode *next;
     ListNode(int x) : val(x), next(nullptr) {}
+};
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
 // Definition for singly-linked list.
@@ -564,6 +572,103 @@ public:
 
         return nullptr;
     }
+
+    // 876. Middle of the Linked List
+    ListNode* middleNode(ListNode* head)
+    {
+        ListNode *slow = head;
+        ListNode *fast = head;
+
+        while (1)
+        {
+            if (!fast->next)
+                return slow;
+
+            slow = slow->next;
+
+            if(!fast->next->next)
+                return slow;
+
+            fast = fast->next->next;
+        }
+    }
+
+    // 92. Reverse Linked List II
+    ListNode* reverseBetween(ListNode* head, int m, int n)
+    {
+        if (!head || m == n)
+            return head;
+
+        int i = 1;
+        ListNode *prev = nullptr;
+        ListNode *node = head;
+        ListNode *next = nullptr;
+        ListNode *pivot= nullptr;
+        ListNode *m_node = nullptr;
+
+        while (node)
+        {
+            next = node->next;
+
+            if (i == m - 1)
+                pivot = node;
+            else if (i == m)
+                m_node = prev = node;
+            else if (i > m && i < n)
+            {
+                node->next = prev;
+                prev = node;
+            }
+            else if (i == n)
+            {
+                node->next = prev;
+                m_node->next = next;
+                if (1 == m)
+                    head = node;
+                else
+                    pivot->next = node;
+                break;
+            }
+
+            node = next;
+            ++i;
+        }
+
+        return head;
+    }
+
+    // 109. Convert Sorted List to Binary Search Tree
+    TreeNode* sortedListToBST(ListNode* head)
+    {
+        if (!head)
+            return nullptr;
+        
+        ListNode *slow = head;
+        ListNode *fast = head;
+        ListNode *prev = nullptr;
+
+        while (fast)
+        {
+            if (!fast->next)
+                break;
+
+            prev = slow;
+            slow = slow->next;
+
+            fast = fast->next->next;
+        }
+
+        TreeNode *tnode = new TreeNode(slow->val);
+
+        if (prev)
+        {
+            prev->next = nullptr;
+            tnode->left = sortedListToBST(head);
+            tnode->right = sortedListToBST(slow->next);
+        }
+
+        return tnode;
+    }
 };
 
 int main()
@@ -573,17 +678,18 @@ int main()
     ListNode* head = nullptr;
     ListNode* head2 = nullptr;
 
-// #define COMMON_INIT
+#define COMMON_INIT_LL_1
+// #define COMMON_INIT_LL_2
 
     vector<int> nodes = { 7, 6, 5, 4, 3, 2, 1 };
-#ifdef COMMON_INIT
+#ifdef COMMON_INIT_LL_1
     singleLinkedList.printNodesArray(nodes);
     head = singleLinkedList.createLinkedListFromArray(nodes);
     singleLinkedList.printLinkedList(head);
 #endif
 
     vector<int> nodes2 = { 2, 0, 2, 1, 7, 8, 9, 1};
-#ifdef COMMON_INIT
+#ifdef COMMON_INIT_LL_2
     singleLinkedList.printNodesArray(nodes2);
     head2 = singleLinkedList.createLinkedListFromArray(nodes2);
     singleLinkedList.printLinkedList(head2);
@@ -676,21 +782,21 @@ int main()
     // }
 
     // 160. Intersection of Two Linked Lists
-    int val;
-    while (1)
-    {
-        singleLinkedList.printNodesArray(nodes);
-        head = singleLinkedList.createLinkedListFromArray(nodes);
-        singleLinkedList.printLinkedList(head);
-        cout << "Input intersection node: ";
-        cin >> val;
+    // int val;
+    // while (1)
+    // {
+    //     singleLinkedList.printNodesArray(nodes);
+    //     head = singleLinkedList.createLinkedListFromArray(nodes);
+    //     singleLinkedList.printLinkedList(head);
+    //     cout << "Input intersection node: ";
+    //     cin >> val;
 
-        singleLinkedList.printNodesArray(nodes2);
-        head2 = singleLinkedList.intersectLinkedList(nodes2, head, val);
-        singleLinkedList.printLinkedList(head2);
-        ListNode* pIntersection = solu.getIntersectionNode(head, head2);
-        cout << "Intersection Node: " << ((nullptr == pIntersection)?"null":to_string(pIntersection->val)) << endl << endl;
-    }
+    //     singleLinkedList.printNodesArray(nodes2);
+    //     head2 = singleLinkedList.intersectLinkedList(nodes2, head, val);
+    //     singleLinkedList.printLinkedList(head2);
+    //     ListNode* pIntersection = solu.getIntersectionNode(head, head2);
+    //     cout << "Intersection Node: " << ((nullptr == pIntersection)?"null":to_string(pIntersection->val)) << endl << endl;
+    // }
 
     // 876. Middle of the Linked List
     // ListNode *pMiddle = solu.middleNode(head);
@@ -710,11 +816,11 @@ int main()
     // }
 
     // 109. Convert Sorted List to Binary Search Tree
-    // nodes = { 1, 2, 3, 4, 5, 6, 7 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
-    // TreeNode *root = solu.sortedListToBST(head);
+    nodes = { 1, 2, 3, 4, 5, 6, 7 };
+    singleLinkedList.printNodesArray(nodes);
+    head = singleLinkedList.createLinkedListFromArray(nodes);
+    singleLinkedList.printLinkedList(head);
+    TreeNode *root = solu.sortedListToBST(head);
 
     // 148. Sort List
     // nodes = { 19, 2, 35, 54, 77, 7, 63 };
