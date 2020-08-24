@@ -669,6 +669,61 @@ public:
 
         return tnode;
     }
+
+    // 148. Sort List
+    // TODO: quick sort?
+    ListNode* sortList(ListNode* head)
+    {
+        return nullptr;
+    }
+
+    // 143. Reorder List
+    void reorderList(ListNode* head)
+    {
+        if (!head)
+            return;
+
+        ListNode *slow = head;
+        ListNode *fast = head;
+        ListNode *prev = nullptr;
+        ListNode *next = nullptr;
+
+        while (fast)
+        {
+            if (!fast->next || !fast->next->next)
+                break;
+            
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        if (slow == fast)
+            return;
+    
+        fast = slow->next;
+        slow->next = nullptr;
+        
+        while (fast)
+        {
+            next = fast->next;
+            fast->next = prev;
+            prev = fast;
+            fast = next;
+        }
+
+        slow = head;
+        fast = prev;
+
+        while (fast)
+        {
+            prev = slow->next;
+            slow->next = fast;
+            next = fast->next;
+            fast->next = prev;
+            slow = prev;
+            fast = next;
+        }
+    }
 };
 
 int main()
@@ -681,7 +736,9 @@ int main()
 #define COMMON_INIT_LL_1
 // #define COMMON_INIT_LL_2
 
-    vector<int> nodes = { 7, 6, 5, 4, 3, 2, 1 };
+    vector<int> nodes = { 1, 2, 3, 4, 5, 6, 7 };
+    // nodes = { 7, 6, 5, 4, 3, 2, 1 };
+    // nodes = { 4,19,14,5,5,-3,1,8,5,11,15 };
 #ifdef COMMON_INIT_LL_1
     singleLinkedList.printNodesArray(nodes);
     head = singleLinkedList.createLinkedListFromArray(nodes);
@@ -816,18 +873,9 @@ int main()
     // }
 
     // 109. Convert Sorted List to Binary Search Tree
-    nodes = { 1, 2, 3, 4, 5, 6, 7 };
-    singleLinkedList.printNodesArray(nodes);
-    head = singleLinkedList.createLinkedListFromArray(nodes);
-    singleLinkedList.printLinkedList(head);
-    TreeNode *root = solu.sortedListToBST(head);
+    // TreeNode *root = solu.sortedListToBST(head);
 
     // 148. Sort List
-    // nodes = { 19, 2, 35, 54, 77, 7, 63 };
-    // nodes = { 4,19,14,5,5,-3,1,8,5,11,15 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
     // head = solu.sortList(head);
     // cout << "Sorted ";
     // singleLinkedList.printLinkedList(head);
