@@ -90,8 +90,30 @@ public:
         cout << endl;
     }
 
-    void buildCycle(ListNode* head, int& cycleEntry)
+    void buildCycle(ListNode* head, int& cycle_entry_pos)
     {
+        if (cycle_entry_pos < 0)
+            return;
+
+        ListNode *node = head;
+        ListNode *entry = nullptr;
+        int i = 0;
+
+        while (1)
+        {
+            if (i == cycle_entry_pos)
+                entry = node;
+
+            if (!node->next)
+                break;
+
+            node = node->next;
+            ++i;
+        }
+
+        if (entry)
+            node->next = entry;
+
         return;
     }
 
@@ -724,6 +746,83 @@ public:
             fast = next;
         }
     }
+
+    // 147. Insertion Sort List
+    ListNode* insertionSortList(ListNode* head)
+    {
+        if (!head)
+            return head;
+
+        ListNode *node = head->next;
+        ListNode *next = nullptr;
+        ListNode *s_node = nullptr;
+        ListNode *s_prev = nullptr;
+        ListNode *s_next = nullptr;
+
+        head->next = nullptr;
+
+        while (node)
+        {
+            next = node->next;
+            s_node = head;
+
+            while (s_node)
+            {
+                if (node->val <= s_node->val)
+                {
+                    if (s_node == head)
+                    {
+                        node->next = head;
+                        head = node;
+                    }
+                    else
+                    {
+                        s_next = s_prev->next;
+                        s_prev->next = node;
+                        node->next = s_next;
+                    }
+                    break;
+                }
+
+                s_prev = s_node;
+                s_node = s_node->next;
+            }
+
+            if (!s_node)
+            {
+                s_prev->next = node;
+                node->next = nullptr;
+            }
+
+            node = next;
+        }
+
+        return head;
+    }
+
+    // 141. Linked List Cycle
+    bool hasCycle(ListNode *head)
+    {
+        if (!head)
+            return false;
+
+        ListNode *slow = head;
+        ListNode *fast = head;
+
+        while (1)
+        {
+            if (!fast->next || !fast->next->next)
+                break;
+            
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if (fast == slow)
+                return true;
+        }
+
+        return false;
+    }
 };
 
 int main()
@@ -733,7 +832,7 @@ int main()
     ListNode* head = nullptr;
     ListNode* head2 = nullptr;
 
-#define COMMON_INIT_LL_1
+// #define COMMON_INIT_LL_1
 // #define COMMON_INIT_LL_2
 
     vector<int> nodes = { 1, 2, 3, 4, 5, 6, 7 };
@@ -886,27 +985,22 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 147. Insertion Sort List
-    // nodes = { 19, 2, 35, 54, 77, 7, 63 };
-    // nodes = { 4,19,14,5,5,-3,1,8,5,11,15 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
     // head = solu.insertionSortList(head);
     // cout << "Insertion sorted ";
     // singleLinkedList.printLinkedList(head);
 
     // 141. Linked List Cycle
-    // int cycleEntry;
-    // while(1)
-    // {
-    //     singleLinkedList.printNodesArray(nodes);
-    //     head = singleLinkedList.createLinkedListFromArray(nodes);
-    //     singleLinkedList.printLinkedList(head);
-    //     cout << "Input the position where tail connects to: ";
-    //     cin >> cycleEntry;
-    //     singleLinkedList.buildCycle(head, cycleEntry);
-    //     cout << "Has cycle: " << (solu.hasCycle(head)?"true":"false") << endl << endl;
-    // }
+    int cycle_entry_pos;
+    while(1)
+    {
+        singleLinkedList.printNodesArray(nodes);
+        head = singleLinkedList.createLinkedListFromArray(nodes);
+        singleLinkedList.printLinkedList(head);
+        cout << "Input the position where tail connects to: ";
+        cin >> cycle_entry_pos;
+        singleLinkedList.buildCycle(head, cycle_entry_pos);
+        cout << "Has cycle: " << (solu.hasCycle(head)?"true":"false") << endl << endl;
+    }
 
     // int cycleEntry;
     // while(1)
