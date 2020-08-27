@@ -823,6 +823,14 @@ public:
 
         return false;
     }
+
+    // 142. Linked List Cycle II
+    ListNode *detectCycle(ListNode *head)
+    {
+        
+
+        return nullptr;
+    }
 };
 
 int main()
@@ -990,8 +998,22 @@ int main()
     // singleLinkedList.printLinkedList(head);
 
     // 141. Linked List Cycle
+    // int cycle_entry_pos;
+    // while (1)
+    // {
+    //     singleLinkedList.printNodesArray(nodes);
+    //     head = singleLinkedList.createLinkedListFromArray(nodes);
+    //     singleLinkedList.printLinkedList(head);
+    //     cout << "Input the position where tail connects to: ";
+    //     cin >> cycle_entry_pos;
+    //     singleLinkedList.buildCycle(head, cycle_entry_pos);
+    //     cout << "Has cycle: " << (solu.hasCycle(head)?"true":"false") << endl << endl;
+    // }
+
+    // 142. Linked List Cycle II
     int cycle_entry_pos;
-    while(1)
+    ListNode *cycle_entry = nullptr;
+    while (1)
     {
         singleLinkedList.printNodesArray(nodes);
         head = singleLinkedList.createLinkedListFromArray(nodes);
@@ -999,21 +1021,9 @@ int main()
         cout << "Input the position where tail connects to: ";
         cin >> cycle_entry_pos;
         singleLinkedList.buildCycle(head, cycle_entry_pos);
-        cout << "Has cycle: " << (solu.hasCycle(head)?"true":"false") << endl << endl;
+        cycle_entry = solu.detectCycle(head);
+        cout << "Cycle entry node: " << ((!cycle_entry)?"null":to_string(cycle_entry->val)) << endl << endl;
     }
-
-    // int cycleEntry;
-    // while(1)
-    // {
-    //     singleLinkedList.printNodesArray(nodes);
-    //     head = singleLinkedList.createLinkedListFromArray(nodes);
-    //     singleLinkedList.printLinkedList(head);
-    //     cout << "Input the position where tail connects to: ";
-    //     cin >> cycleEntry;
-    //     singleLinkedList.buildCycle(head, cycleEntry);
-    //     ListNode *pCycleEntry = solu.detectCycle(head);
-    //     cout << "Cycle entry node: " << ((nullptr == pCycleEntry)?"null":to_string(pCycleEntry->val)) << endl << endl;
-    // }
 
     // 21. Merge Two Sorted Lists
     // nodes = { 1, 3, 5, 6, 7, 12 };
