@@ -817,7 +817,7 @@ public:
             slow = slow->next;
             fast = fast->next->next;
 
-            if (fast == slow)
+            if (slow == fast)
                 return true;
         }
 
@@ -827,10 +827,101 @@ public:
     // 142. Linked List Cycle II
     ListNode *detectCycle(ListNode *head)
     {
-        
+        if (!head)
+            return head;
 
-        return nullptr;
+        ListNode *slow = head;
+        ListNode *fast = head;
+
+        while (1)
+        {
+            if (!fast->next || !fast->next->next)
+                return nullptr;
+
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if (slow == fast)
+                break;
+        }
+
+        slow = head;
+
+        while (slow != fast)
+        {
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        return slow;
     }
+
+    // TODO: a bunch of problems need to be done
+
+    // 445. Add Two Numbers II
+    ListNode* addTwoNumbersII(ListNode* l1, ListNode* l2)
+    {
+        stack<ListNode*> num1, num2;
+        ListNode *h1 = l1;
+        ListNode *h2 = l2;
+        int carry = 0;
+
+        while (l1 || l2)
+        {
+            if (l1)
+            {
+                num1.push(l1);
+                l1 = l1->next;
+            }
+
+            if (l2)
+            {
+                num2.push(l2);
+                l2 = l2->next;
+            }
+        }
+
+        while (num1.size() && num2.size())
+        {
+            l1 = num1.top();
+            num1.pop();
+            l2 = num2.top();
+            num2.pop();
+
+            l1->val += l2->val + carry;
+            carry = l1->val / 10;
+            l1->val %= 10;
+        }
+
+        if (num2.size())
+        {
+            num2.top()->next = l1;
+            num1 = move(num2);
+            h1 = h2;
+        }
+
+        while (num1.size())
+        {
+            if (!carry)
+                break;
+
+            l1 = num1.top();
+            num1.pop();
+            l1->val += carry;
+            carry = l1->val / 10;
+            l1->val %= 10;
+        }
+
+        if (carry)
+        {
+            l2 = new ListNode(1);
+            l2->next = l1;
+            h1 = l2;
+        }
+
+        return h1;
+    }
+
 };
 
 int main()
@@ -840,8 +931,8 @@ int main()
     ListNode* head = nullptr;
     ListNode* head2 = nullptr;
 
-// #define COMMON_INIT_LL_1
-// #define COMMON_INIT_LL_2
+#define COMMON_INIT_LL_1
+#define COMMON_INIT_LL_2
 
     vector<int> nodes = { 1, 2, 3, 4, 5, 6, 7 };
     // nodes = { 7, 6, 5, 4, 3, 2, 1 };
@@ -1011,29 +1102,21 @@ int main()
     // }
 
     // 142. Linked List Cycle II
-    int cycle_entry_pos;
-    ListNode *cycle_entry = nullptr;
-    while (1)
-    {
-        singleLinkedList.printNodesArray(nodes);
-        head = singleLinkedList.createLinkedListFromArray(nodes);
-        singleLinkedList.printLinkedList(head);
-        cout << "Input the position where tail connects to: ";
-        cin >> cycle_entry_pos;
-        singleLinkedList.buildCycle(head, cycle_entry_pos);
-        cycle_entry = solu.detectCycle(head);
-        cout << "Cycle entry node: " << ((!cycle_entry)?"null":to_string(cycle_entry->val)) << endl << endl;
-    }
+    // int cycle_entry_pos;
+    // ListNode *cycle_entry = nullptr;
+    // while (1)
+    // {
+    //     singleLinkedList.printNodesArray(nodes);
+    //     head = singleLinkedList.createLinkedListFromArray(nodes);
+    //     singleLinkedList.printLinkedList(head);
+    //     cout << "Input the position where tail connects to: ";
+    //     cin >> cycle_entry_pos;
+    //     singleLinkedList.buildCycle(head, cycle_entry_pos);
+    //     cycle_entry = solu.detectCycle(head);
+    //     cout << "Cycle entry node: " << ((!cycle_entry)?"null":to_string(cycle_entry->val)) << endl << endl;
+    // }
 
     // 21. Merge Two Sorted Lists
-    // nodes = { 1, 3, 5, 6, 7, 12 };
-    // singleLinkedList.printNodesArray(nodes);
-    // head = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head);
-    // nodes = { 2, 4, 7, 7, 9, 10, 11, 12, 14, 17, 19};
-    // singleLinkedList.printNodesArray(nodes);
-    // ListNode* head2 = singleLinkedList.createLinkedListFromArray(nodes);
-    // singleLinkedList.printLinkedList(head2);
     // head = solu.mergeTwoLists(head, head2);
     // cout << "Merged two lists, ";
     // singleLinkedList.printLinkedList(head);
@@ -1075,9 +1158,9 @@ int main()
     // }
 
     // 445. Add Two Numbers II
-    // head = solu.addTwoNumbersII(head, head2);
-    // cout << "Added two numbers II, ";
-    // singleLinkedList.printLinkedList(head);
+    head = solu.addTwoNumbersII(head, head2);
+    cout << "Added two numbers II, ";
+    singleLinkedList.printLinkedList(head);
 
     DOCK();
 
