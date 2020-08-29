@@ -693,10 +693,70 @@ public:
     }
 
     // 148. Sort List
-    // TODO: quick sort?
+    ListNode *findPivot(ListNode*& head, ListNode* tail, ListNode*& pivot_end)
+    {
+        if (head == tail || !head || !head->next || head->next == tail)
+            return head;
+
+        ListNode *pivot = head;
+        ListNode *pivot_prev = nullptr;
+        ListNode *node = head->next;
+        ListNode *prev = head;
+
+        while (node != tail)
+        {
+            if (node->val < pivot->val)
+            {
+                prev->next = node->next;
+                if (pivot_prev)
+                    pivot_prev->next = node;
+                else
+                    head = node;
+                pivot_prev = node;
+                node->next = pivot;
+                node = prev->next;
+                continue;
+            }
+            else if (node->val == pivot->val)
+            {
+                if (prev == pivot_end)
+                    pivot_end = node;
+                else
+                {
+                    prev->next = node->next;
+                    node->next = pivot_end->next;
+                    pivot_end->next = node;
+                    node = prev->next;
+                    continue;
+                }
+            }
+
+            prev = node;
+            node = node->next;
+        }
+
+        return pivot;
+    }
+
+    ListNode* quickSortList(ListNode* head, ListNode* tail)
+    {
+        if (head != tail)
+        {
+            ListNode *pivot_end = head;
+            ListNode *pivot = findPivot(head, tail, pivot_end);
+            pivot_end->next = quickSortList(pivot_end->next, tail);
+            return quickSortList(head, pivot);
+        }
+
+        return head;
+    }
+
     ListNode* sortList(ListNode* head)
     {
-        return nullptr;
+        if (!head)
+            return head;
+
+        return quickSortList(head, nullptr);
     }
 
     // 143. Reorder List
@@ -856,7 +916,230 @@ public:
         return slow;
     }
 
-    // TODO: a bunch of problems need to be done
+    // 21. Merge Two Sorted Lists
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
+    {
+        if (!l1)
+            return l2;
+        if (!l2)
+            return l1;
+
+        ListNode *h1 = l1;
+        ListNode *h2 = l2;
+        ListNode *prev = nullptr;
+        ListNode *next = nullptr;
+
+        while (l1 && l2)
+        {
+            if (l1->val < l2->val)
+            {
+                if (prev)
+                    prev->next = l1;
+                prev = l1;
+                l1 = l1->next;
+            }
+            else if (l1->val > l2->val)
+            {
+                if (prev)
+                    prev->next = l2;
+                prev = l2;
+                l2 = l2->next;
+            }
+            else
+            {
+                if (prev)
+                    prev->next = l1;
+                next = l1->next;
+                l1->next = l2;
+                prev = l2;
+                l1 = next;
+                l2 = l2->next;
+            }
+        }
+
+        if (l1)
+            prev->next = l1;
+        else if (l2)
+            prev->next = l2;
+
+        return (h1->val <= h2->val)?h1:h2;
+    }
+
+    // 23. Merge k Sorted Lists
+    // ListNode* mergeKLists(vector<ListNode*>& lists)
+    // {
+    //     if (lists.empty())
+    //         return nullptr;
+
+    //     int n = lists.size();
+
+    //     for (int i = 1; i < n; ++i)
+    //     {
+    //         lists[i] = mergeTwoLists(lists[i-1], lists[i]);
+    //     }
+
+    //     return lists[n-1];
+    // }
+
+    void mergeSortKLists(vector<ListNode*>& lists, int left, int right)
+    {
+        if (left < right)
+        {
+            int mid = left + (right - left)/2;
+            mergeSortKLists(lists, left, mid);
+            mergeSortKLists(lists, mid+1, right);
+            // lists[left] = mergeTwoLists(lists[left], lists[mid+1]);
+            lists[right] = mergeTwoLists(lists[mid], lists[right]);
+        }
+    }
+
+    ListNode* mergeKLists(vector<ListNode*>& lists)
+    {
+        if (lists.empty())
+            return nullptr;
+
+        mergeSortKLists(lists, 0, lists.size() - 1);
+
+        // return lists[0];
+        return lists[lists.size()-1];
+    }
+
+    // 138. Copy List with Random Pointer
+    // Definition for a Node.
+    class Node {
+    public:
+        int val;
+        Node* next;
+        Node* random;
+        
+        Node(int _val) {
+            val = _val;
+            next = NULL;
+            random = NULL;
+        }
+    };
+
+    Node* copyRandomList(Node* head)
+    {
+        if (!head)
+            return head;
+
+        unordered_map<Node*, Node*> in_to_out;
+        Node *node_in = head;
+        Node *node_out = nullptr;
+        Node *next = nullptr;
+        Node *random = nullptr;
+        head = nullptr;
+
+        while (node_in)
+        {
+            if (!head)
+            {
+                node_out = new Node(node_in->val);
+                head = node_out;
+                in_to_out.insert({node_in, node_out});
+            }
+            else
+            {
+                auto it = in_to_out.find(node_in);
+                node_out = it->second;
+            }
+            
+            if (node_in->next)
+            {
+                auto it = in_to_out.find(node_in->next);
+                if (in_to_out.end() == it)
+                {
+                    next = new Node(node_in->next->val);
+                    in_to_out.insert({node_in->next, next});
+                    node_out->next = next;
+                }
+                else
+                    node_out->next = it->second;
+            }
+            
+            if (node_in->random)
+            {
+                auto it = in_to_out.find(node_in->random);
+                if (in_to_out.end() == it)
+                {
+                    random = new Node(node_in->random->val);
+                    in_to_out.insert({node_in->random, random});
+                    node_out->random = random;
+                }
+                else
+                    node_out->random = it->second; 
+            }
+
+            node_in = node_in->next;
+        }
+
+        return head;
+    }
+
+    // 25. Reverse Nodes in k-Group
+    ListNode* reverseKGroup(ListNode* head, int k)
+    {
+        if (!head || k <= 1)
+            return head;
+
+        ListNode *node = head;
+        ListNode *prev = nullptr;
+        ListNode *next = nullptr;
+        ListNode *g_begin = nullptr;
+        ListNode *g_end = nullptr;
+        int n = 1;
+        int ng = 0;
+
+        while (1)
+        {
+            if (!node->next)
+                break;
+
+            if (!node->next->next)
+            {
+                ++n;
+                break;
+            }
+
+            n += 2;
+            node = node->next->next;
+        }
+
+        if (k > n)
+            return head;
+
+        ng = n / k;
+        node = head;
+
+        while (ng--)
+        {
+            for (int i = 1; i <= k; i++)
+            {
+                next = node->next;
+
+                if (1 == i)
+                    g_begin = node;
+                else if (i == k)
+                {
+                    if (g_end)
+                        g_end->next = node;
+                    else
+                        head = node;
+                    node->next = prev;
+                    g_begin->next = next;
+                    g_end = g_begin;
+                }
+                else
+                    node->next = prev;
+
+                prev = node;
+                node = next;
+            }
+        }
+
+        return head;
+    }
 
     // 445. Add Two Numbers II
     ListNode* addTwoNumbersII(ListNode* l1, ListNode* l2)
@@ -932,11 +1215,11 @@ int main()
     ListNode* head2 = nullptr;
 
 #define COMMON_INIT_LL_1
-#define COMMON_INIT_LL_2
+// #define COMMON_INIT_LL_2
 
     vector<int> nodes = { 1, 2, 3, 4, 5, 6, 7 };
     // nodes = { 7, 6, 5, 4, 3, 2, 1 };
-    // nodes = { 4,19,14,5,5,-3,1,8,5,11,15 };
+    nodes = { 4,19,14,5,5,-3,1,8,5,11,15 };
 #ifdef COMMON_INIT_LL_1
     singleLinkedList.printNodesArray(nodes);
     head = singleLinkedList.createLinkedListFromArray(nodes);
@@ -1148,7 +1431,7 @@ int main()
 
     // 25. Reverse Nodes in k-Group
     // int k;
-    // while(1)
+    // while (1)
     // {
     //     cout << "How many nodes should be reversed per group: ";
     //     cin >> k;
@@ -1158,9 +1441,9 @@ int main()
     // }
 
     // 445. Add Two Numbers II
-    head = solu.addTwoNumbersII(head, head2);
-    cout << "Added two numbers II, ";
-    singleLinkedList.printLinkedList(head);
+    // head = solu.addTwoNumbersII(head, head2);
+    // cout << "Added two numbers II, ";
+    // singleLinkedList.printLinkedList(head);
 
     DOCK();
 
